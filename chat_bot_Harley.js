@@ -1,7 +1,7 @@
 var Bot    = require('../index');
-var AUTH = '';
-var USERID = '';
-var ROOMID = '';
+var AUTH = 'hDsRTNhBUpPZVlZypxNXKsCu';
+var USERID = '50b8227daaa5cd7d09020841';
+var ROOMID = '50a25f660f812c777476c5df';
 
 var bot = new Bot(AUTH, USERID, ROOMID);
 var theUsersList = { };
@@ -11,6 +11,7 @@ bot.on('speak', function (data) {
   // Get the data
   var name = data.name;
   var text = data.text;
+  var userid = data.userid;
 
   // Respond to "/hello" command
   //if (text.match(/^\/hello$/)) {
@@ -19,6 +20,34 @@ bot.on('speak', function (data) {
 
   if (text.match(/:metal:/)) {
       bot.speak('Git ya hand down before I chop it down!');
+  }
+
+  //Respond to being told to be quiet
+  if (text.match(/quiet/)) {
+      bot.speak('Dontcha tell me to shut up or I\'ll shoot ya... hehe');
+  }
+
+  //Adding the bot to DJ
+  if (text.match(/^\/spin$/)) {
+	  console.log('I\'m gonna play some muzac');
+	  if (userid === '50a40c6deb35c16670add650') {
+	      bot.addDj();}
+  }
+
+  //Removing the bot from the turntables
+  if (text.match(/^\/stop$/)) {
+      console.log('I\'m done playing music for now');
+      if (userid === '50a40c6deb35c16670add650') {
+          bot.remDj();
+      }
+  }
+
+  //Skipping the bot's current song
+  if (text.match(/^\/skip$/)) {
+      console.log('I\'m not feeling this song right now');
+      if (userid === '50a40c6deb35c16670add650') {
+          bot.stopSong();
+      }
   }
 
     // Respond to "/hello" command
@@ -31,7 +60,7 @@ bot.on('speak', function (data) {
       bot.vote('up');
   }
 
-  if (text.match(/man/)) {
+  if (text.match(/the man/)) {
       bot.speak('Mr. J should be around here somewhere....');
   }
 
@@ -42,7 +71,22 @@ bot.on('speak', function (data) {
   }
   
 
-  });
+  //The remix command the prompts the bot to reshuffle the top three songs in the queue on command
+  if (text.match(/remix/)) {
+      bot.playlistAll(function(playlist) {
+          bot.playlistReorder(0, 1000);}
+      );
+      bot.playlistAll(function (playlist) {
+          bot.playlistReorder(1, 1000);}
+      );
+      bot.playlistAll(function (playlist) {
+          bot.playlistReorder(2, 1000);}
+      );
+      console.log('I\'m reordering my song library now');
+      bot.speak('Okay... okay... changing things up!');
+  }
+  
+});
 
 //RandomeAutobop function
 bot.on('newsong', function (data) { voteAutomaticallyButAtRandomTime (this, data);  });
@@ -76,21 +120,28 @@ bot.on('deregistered', function (data) {
     }
 });
 
+    //function on newsong that adds newly played song to the top of the list and the reorders the top three songs in queue
 bot.on('newsong', function (data) {
     var userid = data.userid;
     if (userid != '50b8227daaa5cd7d09020841') {
         songID = data.room.metadata.current_song._id;
         bot.playlistAdd(songID);
         console.log('I just expanded my song library in my queue. Joy!');
+        bot.playlistAll(function (playlist) {
+            bot.playlistReorder(0, 1000);
+        }
+      );
+        bot.playlistAll(function (playlist) {
+            bot.playlistReorder(1, 1000);
+        }
+      );
+        bot.playlistAll(function (playlist) {
+            bot.playlistReorder(2, 1000);
+        }
+      );
+        console.log('I\'m reordering my song library now');
     }
 });
-
-
-
-
-
-
-
 
 
 
