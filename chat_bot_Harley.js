@@ -1,4 +1,4 @@
-var Bot    = require('../index');
+var Bot = require('../index');
 var AUTH = '';
 var USERID = '50b8227daaa5cd7d09020841';
 var ROOMID = '50a25f660f812c777476c5df';
@@ -6,7 +6,7 @@ var moderators = [];
 var BOTS = ['50b8227daaa5cd7d09020841', '50bc2750aaa5cd5f9938fc3b', '50b92bf2eb35c119649146f9'];
 
 var bot = new Bot(AUTH, USERID, ROOMID);
-var theUsersList = { };
+var theUsersList = {};
 var isOn = true;
 
 //When the bot enters the room it will pull the list of moderators to the mods array so mod commands are available.
@@ -25,14 +25,14 @@ bot.on('speak', function (data) {
     var text = data.text;
     var userid = data.userid;
     var moddy = isMod(userid);
-    var bot = isBot(userid);
-    chatter(name, text, userid, moddy, bot);
+    var botty = isBot(userid);
+    chatter(name, text, userid, moddy, botty);
 });
 
 
 
 //RandomAutobop function
-bot.on('newsong', function (data) { voteAutomaticallyButAtRandomTime (this, data);  });
+bot.on('newsong', function (data) { voteAutomaticallyButAtRandomTime(this, data); });
 
 bot.on('roomChanged', function (data) {
     // Reset the users list
@@ -57,7 +57,7 @@ bot.on('registered', function (data) {
     var moddy = isMod(user.userid);
     var bot = isBot(user.userid);
     if (moddy !== true && bot !== true) {
-        //bot.speak('Oh hiya there @' + user.name + '! How have ya been shuga. Make yourself comfy and play whatcha wanna but dontcha anger Mr. J!');
+        bot.speak('Oh hiya there @' + user.name + '! How have ya been shuga. Make yourself comfy and play whatcha wanna but dontcha anger Mr. J!');
     }
 });
 
@@ -66,14 +66,12 @@ bot.on('deregistered', function (data) {
     console.log(user.name + ' \= ' + user.userid + ' has departed');
     //delete theUsersList[user.userid];
     var moddy = isMod(user);
-    for(var i = 0; i < moderators.length; i++) {
-        if (moddy !== true) {
-            //bot.speak('Guess we gots ourselves another quitter. FINE @'+ user.name +'!!! Dont let the door hit ya where Mr. J shived ya!!!');
-        }
+    if (moddy !== true) {
+        bot.speak('Guess we gots ourselves another quitter. FINE @' + user.name + '!!! Dont let the door hit ya where Mr. J shived ya!!!');
     }
 });
 
-    //function on newsong that adds newly played song to the top of the list and the reorders the top three songs in queue
+//function on newsong that adds newly played song to the top of the list and the reorders the top three songs in queue
 bot.on('newsong', function (data) {
     var userid = data.room.metadata.current_dj;
     var songID = data.room.metadata.current_song._id;
@@ -113,7 +111,7 @@ function isBot(user) {
 };
 
 //Function of what to do if the user is not a moderator and adding a song
-function modHandling(isMod,song) {
+function modHandling(isMod, song) {
     if (isMod !== true) {
         bot.playlistAdd(song);
         console.log('I just expanded my song library in my queue. Joy! Song: ' + song);
@@ -135,86 +133,86 @@ function modHandling(isMod,song) {
 };
 
 //Listing of bot responses to chatter
-function chatter(name, text, userid, moddy, bot) {
-    if (bot !== true) {
+function chatter(name, text, userid, moddy, botty) {
+    if (botty !== true) {
         switch (text) {
-        
-        //General chatter responses
+
+            //General chatter responses 
             case ':metal:':
-            //bot.speak("Git ya hand down before I chop it down!");
-            break;
+                bot.speak("Git ya hand down before I chop it down!");
+                break;
 
             case '/quiet':
-            //bot.speak("Dontcha tell me to shut up or I'll shoot ya! hehe");
-            break;
-            
-            case 'hello':
-            //bot.speak("Hey there puddin! How are ya?");
-            break;
-            
-            case 'thoughts':
-            setTimeout(function() {
-                //bot.speak("I'm not too sure shuga...");
-                console.log("Awaiting Bot response");
-            }, 5000);
-            break;
-            
-        //Responses with a bot action which is mostly DJ related at this time
-            case '/scram':
-            if (moddy === true) {
-                bot.remDj();
-            }
-            //bot.speak("All yours puddin");
-            console.log("Bot is off the turntables");
-            break;
+                bot.speak("Dontcha tell me to shut up or I'll shoot ya! hehe");
+                break;
 
-        case '/junk':
-            if (moddy === true) {
-                bot.playlistAll(function (playlist) {
-                    bot.playlistRemove(0);
-                    console.log("The current song was removed");
+            case 'hello':
+                bot.speak("Hey there puddin! How are ya?");
+                break;
+
+            case 'thoughts':
+                setTimeout(function () {
+                    bot.speak("I'm not too sure shuga...");
+                    console.log("Awaiting Bot response");
+                }, 5000);
+                break;
+
+            //Responses with a bot action which is mostly DJ related at this time 
+            case '/scram':
+                if (moddy === true) {
+                    bot.remDj();
                 }
+                bot.speak("All yours puddin");
+                console.log("Bot is off the turntables");
+                break;
+
+            case '/junk':
+                if (moddy === true) {
+                    bot.playlistAll(function (playlist) {
+                        bot.playlistRemove(0);
+                        console.log("The current song was removed");
+                    }
             );
-            }
-            //bot.speak("We won't be hearing that any time soon... sorry Mr. J");
-            bot.stopSong();
-            break;
-            
-            case '/skip':
-            if (moddy === true) {
+                }
+                bot.speak("We won't be hearing that any time soon... sorry Mr. J");
                 bot.stopSong();
-            }
-            console.log("The current song has been skipped");
-            break;
-                        
+                break;
+
+            case '/skip':
+                if (moddy === true) {
+                    bot.stopSong();
+                }
+                console.log("The current song has been skipped");
+                break;
+
             case '/spin':
-            if (moddy === true) {
-                bot.addDJ();
-            }
-            //bot.speak("On it shuga");
-            console.log("Bot has been added to DJ");
-            break;
-            
+                if (moddy === true) {
+                    bot.addDj();
+                }
+                bot.speak("On it shuga");
+                console.log("Bot has been added to DJ");
+                break;
+
             case 'remix':
-            bot.playlistAll(function (playlist) {
-                bot.playlistReorder(0, 1000);
+                bot.playlistAll(function (playlist) {
+                    bot.playlistReorder(0, 1000);
                 }
             );
-            bot.playlistAll(function (playlist) {
-                bot.playlistReorder(1, 1000);
+                bot.playlistAll(function (playlist) {
+                    bot.playlistReorder(1, 1000);
                 }
             );
-            bot.playlistAll(function (playlist) {
-                bot.playlistReorder(2, 1000);
+                bot.playlistAll(function (playlist) {
+                    bot.playlistReorder(2, 1000);
                 }
             );
-            console.log("Requested playlist rearrangement completed");
-            //bot.speak("The deck's been reshuffled shuga ;-)");
-            break;
-            
+                console.log("Requested playlist rearrangement completed");
+                bot.speak("The deck's been reshuffled shuga ;-)");
+                break;
+
             case 'rock it':
-            bot.vote('up');
-            break;
+                bot.vote('up');
+                break;
         }
     }
 };
