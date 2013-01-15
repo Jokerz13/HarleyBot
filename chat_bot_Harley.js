@@ -1,5 +1,5 @@
 var Bot = require('../index');
-var AUTH = 'hDsRTNhBUpPZVlZypxNXKsCu';
+var AUTH = '';
 var USERID = '50b8227daaa5cd7d09020841';
 var ROOMID = '50a25f660f812c777476c5df';
 var moderators = [];
