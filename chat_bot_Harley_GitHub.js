@@ -266,6 +266,7 @@ function chatter(name, text, userid, moddy, botty, source) {
 
             case 'rock it':
                 bot.vote('up');
+                bot.speak("Turn it up!! :metal:");
                 break;
         }
     }
