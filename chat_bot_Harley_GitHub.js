@@ -25,7 +25,7 @@ bot.on('roomChanged', function (data) {
     //console.log(theUsersList);
 });
 
-//Runs the function for speak interaction
+//Runs the function for public speak interaction
 bot.on('speak', function (data) {
     // Get the data
     var name = data.name;
@@ -34,6 +34,16 @@ bot.on('speak', function (data) {
     var moddy = isMod(userid);
     var botty = isBot(userid);
     chatter(name, text, userid, moddy, botty);
+});
+
+//Runs the speak commands when received via a private message
+bot.on('pmmed', function (data) {
+    var sender = data.senderid;
+    var pmtext = data.text;
+    var receiver = data.userid;
+    var moddy = isMod(sender);
+    var botty = isBot(sender);
+    chatter(null, pmtext, sender, moddy, botty);
 });
 
 //Actions taken when a new user enters the room
@@ -129,7 +139,7 @@ function chatter(name, text, userid, moddy, botty) {
     if (botty !== true) {
         switch (text) {
 
-            //General chatter responses 
+            //General chatter responses   
             case ':metal:':
                 bot.speak("Git ya hand down before I chop it down!");
                 break;
@@ -149,7 +159,7 @@ function chatter(name, text, userid, moddy, botty) {
                 }, 5000);
                 break;
 
-            //Responses with a bot action which is mostly DJ related at this time 
+            //Responses with a bot action which is mostly DJ related at this time   
             case '/scram':
                 if (moddy === true) {
                     bot.remDj();
