@@ -4,7 +4,6 @@ var USERID = '50b8227daaa5cd7d09020841';
 var ROOMID = '50a25f660f812c777476c5df';
 var moderators = [];
 var BOTS = ['50b8227daaa5cd7d09020841', '50bc2750aaa5cd5f9938fc3b', '50b92bf2eb35c119649146f9'];
-
 var bot = new Bot(AUTH, USERID, ROOMID);
 var theUsersList = {};
 var isOn = true;
@@ -33,7 +32,8 @@ bot.on('speak', function (data) {
     var userid = data.userid;
     var moddy = isMod(userid);
     var botty = isBot(userid);
-    chatter(name, text, userid, moddy, botty);
+    var src = 'public';
+    chatter(name, text, userid, moddy, botty, src);
 });
 
 //Runs the speak commands when received via a private message
@@ -43,7 +43,8 @@ bot.on('pmmed', function (data) {
     var receiver = data.userid;
     var moddy = isMod(sender);
     var botty = isBot(sender);
-    chatter(null, pmtext, sender, moddy, botty);
+    var src = 'pm';
+    chatter(null, pmtext, sender, moddy, botty, src);
 });
 
 //Actions taken when a new user enters the room
@@ -55,7 +56,7 @@ bot.on('registered', function (data) {
     var moddy = isMod(user.userid);
     var botty = isBot(user.userid);
     theUsersList[user.userid] = user;
-    chatter(name, msg, ID, moddy, botty);
+    chatter(name, msg, ID, moddy, botty, null);
 });
 
 bot.on('deregistered', function (data) {
@@ -66,7 +67,7 @@ bot.on('deregistered', function (data) {
     var moddy = isMod(user);
     var botty = isBot(user);
     delete theUsersList[user.userid];
-    chatter(name, msg, ID, moddy, botty);
+    chatter(name, msg, ID, moddy, botty, null);
 });
 
 //function on newsong that adds newly played song to the top of the list and the reorders the top three songs in queue
@@ -135,7 +136,7 @@ function modHandling(isMod, isBot, song) {
 };
 
 //Listing of bot responses to chatter
-function chatter(name, text, userid, moddy, botty) {
+function chatter(name, text, userid, moddy, botty, source) {
     if (botty !== true) {
         switch (text) {
 
@@ -161,20 +162,25 @@ function chatter(name, text, userid, moddy, botty) {
 
             case '_register':
                 bot.speak('Oh hiya there @' + user.name + '! How have ya been shuga. Make yourself comfy and play whatcha wanna but dontcha anger Mr. J!');
-                console.log(user.name + " = " + user.userid + " just entered the room.");
+                console.log(name + " = " + userid + " just entered the room.");
                 break;
 
             case '_adios':
                 bot.speak('Guess we gots ourselves another quitter. FINE @' + user.name + '!!! Dont let the door hit ya where Mr. J shived ya!!!');
-                console.log(user.name + ' \= ' + user.userid + ' has departed');
+                console.log(name + ' \= ' + userid + ' has departed');
                 break;
 
-            //Responses with a bot action which is mostly DJ related at this time   
+            //Responses with a bot action which is mostly DJ related at this time 
             case '/scram':
                 if (moddy === true) {
                     bot.remDj();
                 }
-                bot.speak("All yours puddin");
+                if (source === 'public') {
+                    bot.speak("All yours puddin");
+                }
+                else if (source === 'pm') {
+                    bot.pm("All yours puddin", userid);
+                }
                 console.log("Bot is off the turntables");
                 break;
 
@@ -186,7 +192,12 @@ function chatter(name, text, userid, moddy, botty) {
                     }
             );
                 }
-                bot.speak("We won't be hearing that any time soon... sorry Mr. J");
+                if (source === 'public') {
+                    bot.speak("We won't be hearing that any time soon... sorry Mr. J");
+                }
+                else if (source === 'pm') {
+                    bot.pm("We won't be hearing that any time soon... sorry Mr. J", userid);
+                }
                 bot.stopSong();
                 break;
 
@@ -201,7 +212,12 @@ function chatter(name, text, userid, moddy, botty) {
                 if (moddy === true) {
                     bot.addDj();
                 }
-                bot.speak("On it shuga");
+                if (source === 'public') {
+                    bot.speak("On it shuga");
+                }
+                else if (source === 'pm') {
+                    bot.pm("On it shuga", userid);
+                }
                 console.log("Bot has been added to DJ");
                 break;
 
@@ -219,7 +235,12 @@ function chatter(name, text, userid, moddy, botty) {
                 }
             );
                 console.log("Requested playlist rearrangement completed");
-                bot.speak("The deck's been reshuffled shuga ;-)");
+                if (source === 'public') {
+                    bot.speak("The deck's been reshuffled shuga ;-)");
+                }
+                else if (source === 'pm') {
+                    bot.pm("The deck's been reshuffled shuga ;-)", userid);
+                }
                 break;
 
             case 'rock it':
