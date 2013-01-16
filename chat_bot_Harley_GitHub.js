@@ -22,6 +22,7 @@ bot.on('roomChanged', function (data) {
         var user = users[i];
         theUsersList[user.userid] = user;
     }
+    //console.log(theUsersList);
 });
 
 //Runs the function for speak interaction
@@ -35,14 +36,12 @@ bot.on('speak', function (data) {
     chatter(name, text, userid, moddy, botty);
 });
 
-//RandomAutobop function
-bot.on('newsong', function (data) { voteAutomaticallyButAtRandomTime(this, data); });
-
 //Actions taken when a new user enters the room
 bot.on('registered', function (data) {
     var user = data.user[0];
     //var name = data.name;
     console.log(user.name + " = " + user.userid + " just entered the room.");
+    theUsersList[user.userid] = user;
     var moddy = isMod(user.userid);
     var bot = isBot(user.userid);
     if (moddy !== true && bot !== true) {
@@ -53,7 +52,7 @@ bot.on('registered', function (data) {
 bot.on('deregistered', function (data) {
     var user = data.user[0];
     console.log(user.name + ' \= ' + user.userid + ' has departed');
-    //delete theUsersList[user.userid];
+    delete theUsersList[user.userid];
     var moddy = isMod(user);
     if (moddy !== true) {
         bot.speak('Guess we gots ourselves another quitter. FINE @' + user.name + '!!! Dont let the door hit ya where Mr. J shived ya!!!');
@@ -69,6 +68,8 @@ bot.on('newsong', function (data) {
     modHandling(moddy, botty, songID);
 });
 
+//RandomAutobop function
+bot.on('newsong', function (data) { voteAutomaticallyButAtRandomTime(this, data); });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //All functions listed below for scripts or calls
