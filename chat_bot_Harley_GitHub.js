@@ -211,7 +211,7 @@ function chatter(name, text, userid, moddy, botty, source) {
                         bot.playlistRemove(0);
                         console.log("The current song was removed");
                     }
-            );
+                    );
                 }
                 if (source === 'public') {
                     bot.speak("We won't be hearing that any time soon... sorry Mr. J");
@@ -246,15 +246,15 @@ function chatter(name, text, userid, moddy, botty, source) {
                 bot.playlistAll(function (playlist) {
                     bot.playlistReorder(0, 1000);
                 }
-            );
+                );
                 bot.playlistAll(function (playlist) {
                     bot.playlistReorder(1, 1000);
                 }
-            );
+                );
                 bot.playlistAll(function (playlist) {
                     bot.playlistReorder(2, 1000);
                 }
-            );
+                );
                 console.log("Requested playlist rearrangement completed");
                 if (source === 'public') {
                     bot.speak("The deck's been reshuffled shuga ;-)");
