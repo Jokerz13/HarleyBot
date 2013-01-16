@@ -1,5 +1,6 @@
 var Bot = require('../index');
 var AUTH = require('../daGo');
+var fs = require('fs')
 var USERID = '50b8227daaa5cd7d09020841';
 var ROOMID = '50a25f660f812c777476c5df';
 var moderators = [];
@@ -82,6 +83,9 @@ bot.on('newsong', function (data) {
 //RandomAutobop function
 bot.on('newsong', function (data) { voteAutomaticallyButAtRandomTime(this, data); });
 
+//Random quote generation by the bot
+//bot.on('roomChange', setTimeout(function () {getQuote(); console.log("New quoted posted");}, 3600000));
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //All functions listed below for scripts or calls
 
@@ -135,6 +139,19 @@ function modHandling(isMod, isBot, song) {
     }
 };
 
+//Pulling of a random quote to spit out in the chat room
+function getQuote() {
+    var fileName = 'quotes.txt';
+    var quotes = [];
+    fs.readFile(fileName, 'utf8', function (err, data) {
+        if (err) {
+            console.log(err);
+        }
+        quotes = data.split('|');
+        bot.speak(quotes[Math.floor(Math.random() * quotes.length)]);
+    });
+};
+
 //Listing of bot responses to chatter
 function chatter(name, text, userid, moddy, botty, source) {
     if (botty !== true) {
@@ -168,6 +185,10 @@ function chatter(name, text, userid, moddy, botty, source) {
             case '_adios':
                 bot.speak('Guess we gots ourselves another quitter. FINE @' + name + '!!! Dont let the door hit ya where Mr. J shived ya!!!');
                 console.log(name + ' \= ' + userid + ' has departed');
+                break;
+
+            case 'quote':
+                getQuote();
                 break;
 
             //Responses with a bot action which is mostly DJ related at this time 
