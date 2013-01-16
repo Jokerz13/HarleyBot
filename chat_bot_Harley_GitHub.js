@@ -49,24 +49,24 @@ bot.on('pmmed', function (data) {
 //Actions taken when a new user enters the room
 bot.on('registered', function (data) {
     var user = data.user[0];
-    //var name = data.name;
-    console.log(user.name + " = " + user.userid + " just entered the room.");
-    theUsersList[user.userid] = user;
+    var name = user.name;
+    var msg = '_register';
+    var ID = user.userid;
     var moddy = isMod(user.userid);
-    var bot = isBot(user.userid);
-    if (moddy !== true && bot !== true) {
-        bot.speak('Oh hiya there @' + user.name + '! How have ya been shuga. Make yourself comfy and play whatcha wanna but dontcha anger Mr. J!');
-    }
+    var botty = isBot(user.userid);
+    theUsersList[user.userid] = user;
+    chatter(name, msg, ID, moddy, botty);
 });
 
 bot.on('deregistered', function (data) {
     var user = data.user[0];
-    console.log(user.name + ' \= ' + user.userid + ' has departed');
-    delete theUsersList[user.userid];
+    var name = user.name;
+    var msg = '_adios';
+    var ID = user.userid;
     var moddy = isMod(user);
-    if (moddy !== true) {
-        bot.speak('Guess we gots ourselves another quitter. FINE @' + user.name + '!!! Dont let the door hit ya where Mr. J shived ya!!!');
-    }
+    var botty = isBot(user);
+    delete theUsersList[user.userid];
+    chatter(name, msg, ID, moddy, botty);
 });
 
 //function on newsong that adds newly played song to the top of the list and the reorders the top three songs in queue
@@ -106,7 +106,7 @@ function isMod(user) {
 function isBot(user) {
     for (i = 0; i < BOTS.length; i++) {
         if (user === BOTS[i]) {
-            console.log("This is a bot.");
+            //console.log("This is a bot.");
             return true;
         }
     }
@@ -157,6 +157,16 @@ function chatter(name, text, userid, moddy, botty) {
                     bot.speak("I'm not too sure shuga...");
                     console.log("Awaiting Bot response");
                 }, 5000);
+                break;
+
+            case '_register':
+                bot.speak('Oh hiya there @' + user.name + '! How have ya been shuga. Make yourself comfy and play whatcha wanna but dontcha anger Mr. J!');
+                console.log(user.name + " = " + user.userid + " just entered the room.");
+                break;
+
+            case '_adios':
+                bot.speak('Guess we gots ourselves another quitter. FINE @' + user.name + '!!! Dont let the door hit ya where Mr. J shived ya!!!');
+                console.log(user.name + ' \= ' + user.userid + ' has departed');
                 break;
 
             //Responses with a bot action which is mostly DJ related at this time   
