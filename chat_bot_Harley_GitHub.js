@@ -8,6 +8,7 @@ var BOTS = ['50b8227daaa5cd7d09020841', '50bc2750aaa5cd5f9938fc3b', '50b92bf2eb3
 var bot = new Bot(AUTH, USERID, ROOMID);
 var theUsersList = {};
 var isOn = true;
+var sayQuotes = true;
 
 //When the bot enters the room it will pull the list of moderators to the mods array so mod commands are available.
 bot.on('roomChanged', function (data)
@@ -26,10 +27,14 @@ bot.on('roomChanged', function (data)
         var user = users[i];
         theUsersList[user.userid] = user;
     }
-    //console.log(theUsersList);
-    console.log("Starting quote timer of " + time);
     //Quote fetching based on a timer
-    setTimeout(getQuote(), time);
+    while (sayQuotes === true)
+    {
+        //console.log(theUsersList);
+        console.log("Starting quote timer of " + time);
+        setTimeout(getQuote(), time);
+        time = randomNum();
+    }
 });
 
 //Runs the function for public speak interaction
@@ -226,6 +231,34 @@ function chatter(name, text, userid, moddy, botty, source)
 
             case 'quote':
                 getQuote();
+                break;
+
+                //Turns off the auto quoting function
+            case '/stopQuote':
+                if (source === 'public')
+                {
+                    bot.speak("Fine... I keep these gems to myself :-P");
+                }
+                else if (source === 'pm')
+                {
+                    bot.pm("Fine... I keep these gems to myself :-P", userid);
+                }
+                sayQuotes = false;
+                console.log("Quoting has been turned off");
+                break;
+
+                //Turns the auto quoting function on
+            case '/startQuote':
+                if (source === 'public')
+                {
+                    bot.speak("Oh you'll love these shuga! ;-)");
+                }
+                else if (source === 'pm')
+                {
+                    bot.pm("Oh you'll love these shuga! ;-)", userid);
+                }
+                sayQuotes = true;
+                console.log("Quoting has been turned on");
                 break;
 
                 //Responses with a bot action which is mostly DJ related at this time
