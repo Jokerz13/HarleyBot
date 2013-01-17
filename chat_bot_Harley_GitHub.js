@@ -9,12 +9,12 @@ var bot = new Bot(AUTH, USERID, ROOMID);
 var theUsersList = {};
 var isOn = true;
 var sayQuotes = true;
+var time = randomNum();
 
 //When the bot enters the room it will pull the list of moderators to the mods array so mod commands are available.
 bot.on('roomChanged', function (data)
 {
     var mods = data.room.metadata.moderator_id;
-    var time = randomNum();
     moderators = [];
     for (var i = 0; i < mods.length; i++)
     {
@@ -28,14 +28,20 @@ bot.on('roomChanged', function (data)
         theUsersList[user.userid] = user;
     }
     //Quote fetching based on a timer
-    while (sayQuotes === true)
+    setInterval(function ()
     {
-        //console.log(theUsersList);
-        console.log("Starting quote timer of " + time);
-        setInterval(getQuote(), time);
-        time = randomNum();
-        break;
-    }
+        if (sayQuotes === true)
+        {
+            console.log("Starting quote timer of " + time);
+            getQuote();
+            time = randomNum();
+        }
+        else
+        {
+            console.log("Sending quotes is currently off");
+            time = randomNum();
+        }
+    }, time);
 });
 
 //Runs the function for public speak interaction
@@ -107,7 +113,7 @@ bot.on('newsong', function (data) { voteAutomaticallyButAtRandomTime(this, data)
 //Function for requesting a large random wait number
 function randomNum()
 {
-    var waitTime = Math.floor(Math.random() * 1000 * 60 * 60);
+    var waitTime = Math.floor(Math.random() * 1000 * 60 * 45);
     return waitTime;
 };
 
