@@ -32,8 +32,9 @@ bot.on('roomChanged', function (data)
     {
         //console.log(theUsersList);
         console.log("Starting quote timer of " + time);
-        setTimeout(getQuote(), time);
+        setInterval(getQuote(), time);
         time = randomNum();
+        break;
     }
 });
 
