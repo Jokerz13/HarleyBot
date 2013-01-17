@@ -10,23 +10,31 @@ var theUsersList = {};
 var isOn = true;
 
 //When the bot enters the room it will pull the list of moderators to the mods array so mod commands are available.
-bot.on('roomChanged', function (data) {
+bot.on('roomChanged', function (data)
+{
     var mods = data.room.metadata.moderator_id;
+    var time = randomNum();
     moderators = [];
-    for (var i = 0; i < mods.length; i++) {
+    for (var i = 0; i < mods.length; i++)
+    {
         moderators.push(mods[i]);
     }
     theUsersList = {};
     var users = data.users;
-    for (var i = 0; i < users.length; i++) {
+    for (var i = 0; i < users.length; i++)
+    {
         var user = users[i];
         theUsersList[user.userid] = user;
     }
     //console.log(theUsersList);
+    console.log("Starting quote timer of " + time);
+    //Quote fetching based on a timer
+    setTimeout(getQuote(), time);
 });
 
 //Runs the function for public speak interaction
-bot.on('speak', function (data) {
+bot.on('speak', function (data)
+{
     // Get the data
     var name = data.name;
     var text = data.text;
@@ -38,7 +46,8 @@ bot.on('speak', function (data) {
 });
 
 //Runs the speak commands when received via a private message
-bot.on('pmmed', function (data) {
+bot.on('pmmed', function (data)
+{
     var sender = data.senderid;
     var pmtext = data.text;
     var receiver = data.userid;
@@ -49,7 +58,8 @@ bot.on('pmmed', function (data) {
 });
 
 //Actions taken when a new user enters the room
-bot.on('registered', function (data) {
+bot.on('registered', function (data)
+{
     var user = data.user[0];
     var name = user.name;
     var msg = '_register';
@@ -60,7 +70,8 @@ bot.on('registered', function (data) {
     chatter(name, msg, ID, moddy, botty, null);
 });
 
-bot.on('deregistered', function (data) {
+bot.on('deregistered', function (data)
+{
     var user = data.user[0];
     var name = user.name;
     var msg = '_adios';
@@ -72,7 +83,8 @@ bot.on('deregistered', function (data) {
 });
 
 //function on newsong that adds newly played song to the top of the list and the reorders the top three songs in queue
-bot.on('newsong', function (data) {
+bot.on('newsong', function (data)
+{
     var userid = data.room.metadata.current_dj;
     var songID = data.room.metadata.current_song._id;
     var moddy = isMod(userid);
@@ -83,24 +95,34 @@ bot.on('newsong', function (data) {
 //RandomAutobop function
 bot.on('newsong', function (data) { voteAutomaticallyButAtRandomTime(this, data); });
 
-//Random quote generation by the bot
-//bot.on('roomChange', setTimeout(function () {getQuote(); console.log("New quoted posted");}, 3600000));
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //All functions listed below for scripts or calls
 
-function voteAutomaticallyButAtRandomTime(caller, data) {
+//Function for requesting a large random wait number
+function randomNum()
+{
+    var waitTime = Math.floor(Math.random() * 1000 * 60 * 60);
+    return waitTime;
+};
+
+//Function to do the randome bot vote
+function voteAutomaticallyButAtRandomTime(caller, data)
+{
     var maxWaitSeconds = 600;
     var oneSecond = 1000;
-    setTimeout(function () {
+    setTimeout(function ()
+    {
         caller.vote('up');
     }, Math.floor(Math.random() * maxWaitSeconds) * oneSecond);
 };
 
 //Function to run the check that the user is a moderator
-function isMod(user) {
-    for (i = 0; i < moderators.length; i++) {
-        if (user === moderators[i]) {
+function isMod(user)
+{
+    for (i = 0; i < moderators.length; i++)
+    {
+        if (user === moderators[i])
+        {
             //console.log("This is a moderator. I'm not adding this song.");
             return true;
         }
@@ -108,9 +130,12 @@ function isMod(user) {
 };
 
 //Function to run the check that the user is a bot
-function isBot(user) {
-    for (i = 0; i < BOTS.length; i++) {
-        if (user === BOTS[i]) {
+function isBot(user)
+{
+    for (i = 0; i < BOTS.length; i++)
+    {
+        if (user === BOTS[i])
+        {
             //console.log("This is a bot.");
             return true;
         }
@@ -118,20 +143,25 @@ function isBot(user) {
 };
 
 //Function of what to do if the user is not a moderator and adding a song
-function modHandling(isMod, isBot, song) {
-    if (isMod !== true && isBot !== true) {
+function modHandling(isMod, isBot, song)
+{
+    if (isMod !== true && isBot !== true)
+    {
         bot.playlistAdd(song);
         console.log('I just expanded my song library in my queue. Joy! Song: ' + song);
-        bot.playlistAll(function (playlist) {
+        bot.playlistAll(function (playlist)
+        {
             bot.playlistReorder(0, 1000);
             //console.log("Here is my next song: " + playlist[0]);
         }
       );
-        bot.playlistAll(function (playlist) {
+        bot.playlistAll(function (playlist)
+        {
             bot.playlistReorder(1, 1000);
         }
       );
-        bot.playlistAll(function (playlist) {
+        bot.playlistAll(function (playlist)
+        {
             bot.playlistReorder(2, 1000);
         }
       );
@@ -140,11 +170,14 @@ function modHandling(isMod, isBot, song) {
 };
 
 //Pulling of a random quote to spit out in the chat room
-function getQuote() {
+function getQuote()
+{
     var fileName = 'quotes.txt';
     var quotes = [];
-    fs.readFile(fileName, 'utf8', function (err, data) {
-        if (err) {
+    fs.readFile(fileName, 'utf8', function (err, data)
+    {
+        if (err)
+        {
             console.log(err);
         }
         quotes = data.split('|');
@@ -153,11 +186,14 @@ function getQuote() {
 };
 
 //Listing of bot responses to chatter
-function chatter(name, text, userid, moddy, botty, source) {
-    if (botty !== true) {
-        switch (text) {
+function chatter(name, text, userid, moddy, botty, source)
+{
+    if (botty !== true)
+    {
+        switch (text)
+        {
 
-            //General chatter responses   
+            //General chatter responses  
             case ':metal:':
                 bot.speak("Git ya hand down before I chop it down!");
                 break;
@@ -171,7 +207,8 @@ function chatter(name, text, userid, moddy, botty, source) {
                 break;
 
             case 'thoughts':
-                setTimeout(function () {
+                setTimeout(function ()
+                {
                     bot.speak("I'm not too sure shuga...");
                     console.log("Awaiting Bot response");
                 }, 5000);
@@ -191,75 +228,91 @@ function chatter(name, text, userid, moddy, botty, source) {
                 getQuote();
                 break;
 
-            //Responses with a bot action which is mostly DJ related at this time 
+                //Responses with a bot action which is mostly DJ related at this time
             case '/scram':
-                if (moddy === true) {
+                if (moddy === true)
+                {
                     bot.remDj();
                 }
-                if (source === 'public') {
+                if (source === 'public')
+                {
                     bot.speak("All yours puddin");
                 }
-                else if (source === 'pm') {
+                else if (source === 'pm')
+                {
                     bot.pm("All yours puddin", userid);
                 }
                 console.log("Bot is off the turntables");
                 break;
 
             case '/junk':
-                if (moddy === true) {
-                    bot.playlistAll(function (playlist) {
+                if (moddy === true)
+                {
+                    bot.playlistAll(function (playlist)
+                    {
                         bot.playlistRemove(0);
                         console.log("The current song was removed");
                     }
                     );
                 }
-                if (source === 'public') {
+                if (source === 'public')
+                {
                     bot.speak("We won't be hearing that any time soon... sorry Mr. J");
                 }
-                else if (source === 'pm') {
+                else if (source === 'pm')
+                {
                     bot.pm("We won't be hearing that any time soon... sorry Mr. J", userid);
                 }
                 bot.stopSong();
                 break;
 
             case '/skip':
-                if (moddy === true) {
+                if (moddy === true)
+                {
                     bot.stopSong();
                 }
                 console.log("The current song has been skipped");
                 break;
 
             case '/spin':
-                if (moddy === true) {
+                if (moddy === true)
+                {
                     bot.addDj();
                 }
-                if (source === 'public') {
+                if (source === 'public')
+                {
                     bot.speak("On it shuga");
                 }
-                else if (source === 'pm') {
+                else if (source === 'pm')
+                {
                     bot.pm("On it shuga", userid);
                 }
                 console.log("Bot has been added to DJ");
                 break;
 
             case 'remix':
-                bot.playlistAll(function (playlist) {
+                bot.playlistAll(function (playlist)
+                {
                     bot.playlistReorder(0, 1000);
                 }
                 );
-                bot.playlistAll(function (playlist) {
+                bot.playlistAll(function (playlist)
+                {
                     bot.playlistReorder(1, 1000);
                 }
                 );
-                bot.playlistAll(function (playlist) {
+                bot.playlistAll(function (playlist)
+                {
                     bot.playlistReorder(2, 1000);
                 }
                 );
                 console.log("Requested playlist rearrangement completed");
-                if (source === 'public') {
+                if (source === 'public')
+                {
                     bot.speak("The deck's been reshuffled shuga ;-)");
                 }
-                else if (source === 'pm') {
+                else if (source === 'pm')
+                {
                     bot.pm("The deck's been reshuffled shuga ;-)", userid);
                 }
                 break;
