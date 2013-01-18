@@ -181,10 +181,11 @@ function mixItUp()
     //var taskDone = "";
     bot.playlistAll(function (playlist)
     {
-        for (i = 0; i < 25; i++)
+        var listCount = playlist.list.length;
+        for (i = 0; i < 50; i++)
         {
             var start = Math.floor(Math.random() * 100);
-            var end = Math.floor(Math.random() * 1000);
+            var end = Math.floor(Math.random() * listCount);
             bot.playlistReorder(start, end);
             //Setting of the variable to store what occurred and returning it via console. Commented out after testing verified the code works but will keep for future reference.
             //taskDone = ("Moved song at position " + start + " to position " + end);
