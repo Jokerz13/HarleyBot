@@ -167,21 +167,31 @@ function modHandling(isMod, isBot, song)
         bot.playlistAll(function (playlist)
         {
             bot.playlistReorder(0, 1000);
-            //console.log("Here is my next song: " + playlist[0]);
         }
       );
-        bot.playlistAll(function (playlist)
-        {
-            bot.playlistReorder(1, 1000);
-        }
-      );
-        bot.playlistAll(function (playlist)
-        {
-            bot.playlistReorder(2, 1000);
-        }
-      );
+        mixItUp();
         console.log('I\'m reordering my song library now');
     }
+};
+
+//Song re-organizing. Runs 25 times using random numbers.
+function mixItUp()
+{
+    //Variable used for storing the logging of what song was moved where.  Commented out after testing verified the code works but will keep for future reference.
+    //var taskDone = "";
+    bot.playlistAll(function (playlist)
+    {
+        for (i = 0; i < 25; i++)
+        {
+            var start = Math.floor(Math.random() * 100);
+            var end = Math.floor(Math.random() * 1000);
+            bot.playlistReorder(start, end);
+            //Setting of the variable to store what occurred and returning it via console. Commented out after testing verified the code works but will keep for future reference.
+            //taskDone = ("Moved song at position " + start + " to position " + end);
+            //console.log(taskDone);
+        }
+    }
+);
 };
 
 //Pulling of a random quote to spit out in the chat room
@@ -334,21 +344,7 @@ function chatter(name, text, userid, moddy, botty, source)
                 break;
 
             case 'remix':
-                bot.playlistAll(function (playlist)
-                {
-                    bot.playlistReorder(0, 1000);
-                }
-                );
-                bot.playlistAll(function (playlist)
-                {
-                    bot.playlistReorder(1, 1000);
-                }
-                );
-                bot.playlistAll(function (playlist)
-                {
-                    bot.playlistReorder(2, 1000);
-                }
-                );
+                mixItUp();
                 console.log("Requested playlist rearrangement completed");
                 if (source === 'public')
                 {
