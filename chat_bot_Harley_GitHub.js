@@ -28,20 +28,7 @@ bot.on('roomChanged', function (data)
         theUsersList[user.userid] = user;
     }
     //Quote fetching based on a timer
-    setInterval(function ()
-    {
-        if (sayQuotes === true)
-        {
-            console.log("Starting quote timer of " + time);
-            getQuote();
-            time = randomNum();
-        }
-        else
-        {
-            console.log("Sending quotes is currently off");
-            time = randomNum();
-        }
-    }, time);
+    setInterval(timeToQuote, time);
 });
 
 //Runs the function for public speak interaction
@@ -115,6 +102,22 @@ function randomNum()
 {
     var waitTime = Math.floor(Math.random() * 1000 * 60 * 45);
     return waitTime;
+};
+
+//Function for doing the quote call and verifying that the function is authorized
+function timeToQuote()
+{
+    if (sayQuotes === true)
+    {
+        console.log("*** Starting quote timer of " + time + " ***");
+        getQuote();
+        time = randomNum();
+    }
+    else
+    {
+        console.log("*** Sending quotes is currently off ***");
+        time = randomNum();
+    }
 };
 
 //Function to do the randome bot vote
