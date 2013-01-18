@@ -241,13 +241,19 @@ function chatter(name, text, userid, moddy, botty, source)
                 break;
 
             case '_register':
-                bot.speak('Oh hiya there @' + name + '! How have ya been shuga. Make yourself comfy and play whatcha wanna but dontcha anger Mr. J!');
-                console.log(name + " = " + userid + " just entered the room.");
+                if (moddy !== true)
+                {
+                    bot.speak('Oh hiya there @' + name + '! How have ya been shuga. Make yourself comfy and play whatcha wanna but dontcha anger Mr. J!');
+                    console.log(name + " = " + userid + " just entered the room.");
+                }
                 break;
 
             case '_adios':
-                bot.speak('Guess we gots ourselves another quitter. FINE @' + name + '!!! Dont let the door hit ya where Mr. J shived ya!!!');
-                console.log(name + ' \= ' + userid + ' has departed');
+                if (moddy !== true)
+                {
+                    bot.speak('Guess we gots ourselves another quitter. FINE @' + name + '!!! Dont let the door hit ya where Mr. J shived ya!!!');
+                    console.log(name + ' \= ' + userid + ' has departed');
+                }
                 break;
 
             case 'quote':
