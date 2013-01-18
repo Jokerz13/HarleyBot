@@ -28,7 +28,7 @@ bot.on('roomChanged', function (data)
         theUsersList[user.userid] = user;
     }
     //Quote fetching based on a timer
-    setInterval(timeToQuote, time);
+    setInterval(timeToQuote(), time);
 });
 
 //Runs the function for public speak interaction
