@@ -8,6 +8,7 @@ var BOTS = ['50b8227daaa5cd7d09020841', '50bc2750aaa5cd5f9938fc3b', '50b92bf2eb3
 var bot = new Bot(AUTH, USERID, ROOMID);
 var theUsersList = {};
 var isOn = true;
+var myID = '50a40c6deb35c16670add650';
 var sayQuotes = true;
 var time = randomNum();
 
@@ -96,6 +97,32 @@ bot.on('newsong', function (data) { voteAutomaticallyButAtRandomTime(this, data)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //All functions listed below for scripts or calls
+
+//Function to be called that will output all of the songs in the bot's song library
+function collection()
+{
+    bot.playlistAll(function (playlist)
+    {
+        var SetList = "";
+        for (i = 0; i < playlist.list.length; i++)
+        {
+            var playlistItem = (playlist.list[i]);
+            var ItemInfo = playlistItem.metadata;
+            //console.log("This song's ID is " + playlistItem._id);
+            //outputCheck(console.log("This song's ID is " + playlistItem._id), "playlistInfo");
+            if (i !== playlist.list.length - 1)
+            {
+                SetList += ("Song ID = " + playlistItem._id + "\n" + "Song album = " + ItemInfo.album + "\n" + "Song name = " + ItemInfo.song + "\n" + "Song artist = " + ItemInfo.artist + "\n" + "Explicit flag = " + ItemInfo.explicit + "\n" + "Song genre = " + ItemInfo.genre + "\n" + "Cover art = " + ItemInfo.coverart + "\n----------------------------------------\n");
+            }
+            else
+            {
+                SetList += ("Song ID = " + playlistItem._id + "\n" + "Song album = " + ItemInfo.album + "\n" + "Song name = " + ItemInfo.song + "\n" + "Song artist = " + ItemInfo.artist + "\n" + "Explicit flag = " + ItemInfo.explicit + "\n" + "Song genre = " + ItemInfo.genre + "\n" + "Cover art = " + ItemInfo.coverart);
+            }
+        }
+        outputCheck(SetList, "Bot_playlistInfo");
+        console.log("Output file creation completed");
+    });
+};
 
 //Function for requesting a large random wait number
 function randomNum()
@@ -208,6 +235,16 @@ function getQuote()
         }
         quotes = data.split('|');
         bot.speak(quotes[Math.floor(Math.random() * quotes.length)]);
+    });
+};
+
+//Static function to view what the output actually
+function outputCheck(data, file)
+{
+    var filename = file + '.txt'
+    fs.writeFile(filename, data, function (err)
+    {
+        if (err) return console.log(err);
     });
 };
 
@@ -360,6 +397,20 @@ function chatter(name, text, userid, moddy, botty, source)
                 else if (source === 'pm')
                 {
                     bot.pm("The deck's been reshuffled shuga ;-)", userid);
+                }
+                break;
+
+                //This switch is to output the bot's playlist
+            case 'songs':
+                if (source === 'public' && userid === myID)
+                {
+                    collection();
+                    bot.speak("Here's what I got shuga");
+                }
+                else if (source === 'pm' && userid === myID)
+                {
+                    collection();
+                    bot.pm("Here's what I got shuga", userid);
                 }
                 break;
 
