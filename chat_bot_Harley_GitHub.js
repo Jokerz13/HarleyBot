@@ -109,8 +109,6 @@ function collection()
         {
             var playlistItem = (playlist.list[i]);
             var ItemInfo = playlistItem.metadata;
-            //console.log("This song's ID is " + playlistItem._id);
-            //outputCheck(console.log("This song's ID is " + playlistItem._id), "playlistInfo");
             SetList += ("This is song " + (i + 1) + " of " + playlist.list.length + ". \n");
             if (i !== playlist.list.length - 1)
             {
