@@ -229,11 +229,14 @@ function mixItUp()
         {
             console.log("Can't perform a remix at this time. Function is waiting to be turned on.");
         }
-        setInterval(function ()
+        if (allowRemix === false)
         {
-            allowRemix = true;
-            console.log("Remix option is now available.");
-        }, 600000);
+            setInterval(function ()
+            {
+                allowRemix = true;
+                console.log("Remix option is now available.");
+            }, 600000);
+        }
     }
     );
 };
