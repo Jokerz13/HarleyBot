@@ -104,12 +104,14 @@ function collection()
     bot.playlistAll(function (playlist)
     {
         var SetList = "";
+        SetList += ("The playlist contains " + playlist.list.length + " songs. \n----------------------------------------\n");
         for (i = 0; i < playlist.list.length; i++)
         {
             var playlistItem = (playlist.list[i]);
             var ItemInfo = playlistItem.metadata;
             //console.log("This song's ID is " + playlistItem._id);
             //outputCheck(console.log("This song's ID is " + playlistItem._id), "playlistInfo");
+            SetList += ("This is song " + (i + 1) + " of " + playlist.list.length + ". \n");
             if (i !== playlist.list.length - 1)
             {
                 SetList += ("Song ID = " + playlistItem._id + "\n" + "Song album = " + ItemInfo.album + "\n" + "Song name = " + ItemInfo.song + "\n" + "Song artist = " + ItemInfo.artist + "\n" + "Explicit flag = " + ItemInfo.explicit + "\n" + "Song genre = " + ItemInfo.genre + "\n" + "Cover art = " + ItemInfo.coverart + "\n----------------------------------------\n");
