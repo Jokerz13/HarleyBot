@@ -10,6 +10,7 @@ var theUsersList = {};
 var isOn = true;
 var myID = '50a40c6deb35c16670add650';
 var sayQuotes = true;
+var allowRemix = true;
 var time = randomNum();
 
 //When the bot enters the room it will pull the list of moderators to the mods array so mod commands are available.
@@ -209,17 +210,32 @@ function mixItUp()
     bot.playlistAll(function (playlist)
     {
         var listCount = playlist.list.length;
-        for (i = 0; i < 50; i++)
+        if (allowRemix === true)
         {
-            var start = Math.floor(Math.random() * 100);
-            var end = Math.floor(Math.random() * listCount);
-            bot.playlistReorder(start, end);
-            //Setting of the variable to store what occurred and returning it via console. Commented out after testing verified the code works but will keep for future reference.
-            //taskDone = ("Moved song at position " + start + " to position " + end);
-            //console.log(taskDone);
+            for (i = 0; i < 50; i++)
+            {
+                var start = Math.floor(Math.random() * 100);
+                var end = Math.floor(Math.random() * listCount);
+                bot.playlistReorder(start, end);
+                //Setting of the variable to store what occurred and returning it via console. Commented out after testing verified the code works but will keep for future reference.
+                //taskDone = ("Moved song at position " + start + " to position " + end);
+                //console.log(taskDone);
+            }
+            console.log("Requested playlist rearrangement completed");
+            console.log("Remix function now going into sleep mode.");
+            allowRemix = false;
         }
+        else
+        {
+            console.log("Can't perform a remix at this time. Function is waiting to be turned on.");
+        }
+        setInterval(function ()
+        {
+            allowRemix = true;
+            console.log("Remix option is now available.");
+        }, 600000);
     }
-);
+    );
 };
 
 //Pulling of a random quote to spit out in the chat room
@@ -389,7 +405,6 @@ function chatter(name, text, userid, moddy, botty, source)
 
             case 'remix':
                 mixItUp();
-                console.log("Requested playlist rearrangement completed");
                 if (source === 'public')
                 {
                     bot.speak("The deck's been reshuffled shuga ;-)");
