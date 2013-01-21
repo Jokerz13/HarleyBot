@@ -433,6 +433,17 @@ function chatter(name, text, userid, moddy, botty, source)
                 bot.vote('up');
                 bot.speak("Turn it up!! :metal:");
                 break;
+
+            default:
+                if (source === 'public')
+                {
+                    //Do nothing at this time since it will address any chatter going on
+                }
+                else if (source === 'pm')
+                {
+                    bot.pm("Oh... whisper something else to me sweetie.", userid);
+                }
+                break;
         }
     }
 };
